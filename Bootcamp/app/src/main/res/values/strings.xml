@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Bootcamp</string>
+    <string name="to_db">Save to Database!</string>
+</resources>
