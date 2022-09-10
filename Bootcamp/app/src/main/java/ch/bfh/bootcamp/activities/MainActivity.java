@@ -52,16 +52,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initialize();
-
-
         mCodeScanner = new CodeScanner(this, findViewById(R.id.scanner_view));
         mCodeScanner.setScanMode(ScanMode.CONTINUOUS);
 
+        initialize();
+
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
-
     }
 
     private void initialize() {
@@ -144,8 +141,4 @@ public class MainActivity extends AppCompatActivity {
         //release magnet scanner
         mSensorManager.unregisterListener(magnetListener);
     }
-
-
-
-
 }
