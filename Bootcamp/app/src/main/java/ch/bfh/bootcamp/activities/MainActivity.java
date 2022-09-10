@@ -1,10 +1,5 @@
 package ch.bfh.bootcamp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -19,10 +14,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.budiyev.android.codescanner.CodeScanner;
-import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ScanMode;
 import com.google.zxing.Result;
@@ -31,6 +29,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import ch.bfh.bootcamp.R;
+import ch.bfh.bootcamp.utils.LogAppUtil;
+import ch.bfh.bootcamp.utils.MagnetUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,26 +38,77 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView textView_qr_content;
     private Button button_submit;
+    private ProgressBar progressBar;
 
+    //Sensors
     private SensorManager mSensorManager;
     private Sensor mSensor;
+    private SensorEventListener magnetListener;
+
+    //
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Check for permission of camera
+        initialize();
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.CAMERA}, 100);
-        }
 
+        mCodeScanner = new CodeScanner(this, findViewById(R.id.scanner_view));
+        mCodeScanner.setScanMode(ScanMode.CONTINUOUS);
+
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+
+    }
+
+    private void initialize() {
+        progressBar = findViewById(R.id.progressBar);
         textView_qr_content = findViewById(R.id.qr_content);
         button_submit = findViewById(R.id.button_submit);
-        CodeScannerView scannerView = findViewById(R.id.scanner_view);
-        mCodeScanner = new CodeScanner(this, scannerView);
-        mCodeScanner.setScanMode(ScanMode.CONTINUOUS);
+
+        createListener();
+        checkForPermissions();
+    }
+
+    private void checkForPermissions() {
+        //Check for permission of camera
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 100);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mCodeScanner.startPreview();
+        mSensorManager.registerListener(magnetListener, mSensor, mSensorManager.SENSOR_DELAY_NORMAL);
+
+    }
+
+    public void createListener() {
+        //Set button to submit to logbook
+        button_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage(R.string.confirmation_title)
+                        .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Start logging activity
+                                startActivity(LogAppUtil.createIntent(textView_qr_content.getText().toString()));
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, (dialog, id) -> {
+                            // User cancelled the dialog
+                        });
+                builder.create().show();
+            }
+        });
+
         //Set callback if qrcode is detected
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
@@ -66,82 +117,35 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         textView_qr_content.setText(result.getText());
-                        /*Toast.makeText(MainActivity.this, result.getText(), Toast.LENGTH_SHORT).show();*/
                     }
                 });
             }
         });
-        //Set button to submit to logbook
-        button_submit.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setMessage("Are you sure that you want to submit this solution")
-                        .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // START THE GAME!
-                                log(textView_qr_content.getText().toString());
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // User cancelled the dialog
-                            }
-                        });
-                builder.create().show();
-            }
-        });
-
-        mCodeScanner.startPreview();
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        mSensorManager.registerListener(new SensorEventListener() {
+        //create magnet lister
+        magnetListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
                 float[] mag = sensorEvent.values;
-                double betrag = Math.sqrt(mag[0] * mag[0] + mag[1] * mag[1] + mag[2] *
-                        mag[2]);
-                betrag = betrag / 100;
-                betrag = betrag > 100 ? 100 : betrag;
-                ProgressBar progressBar = findViewById(R.id.progressBar);
-                progressBar.setMax(100);
-                progressBar.setProgress( (int) Math.round(betrag));
+                progressBar.setProgress(MagnetUtil.calculateMagnetPercentage(mag, mSensor.getMaximumRange()));
             }
-
             @Override
             public void onAccuracyChanged(Sensor sensor, int i) {
             }
-        }, mSensor, mSensorManager.SENSOR_DELAY_NORMAL);
+        };
 
-
-    }
-    @Override
-    public void onResume() {
-        super.onResume();
-        mCodeScanner.startPreview();
     }
 
     @Override
     public void onPause() {
-        mCodeScanner.releaseResources();
         super.onPause();
+        //release resources of qr code scanner
+        mCodeScanner.releaseResources();
+        //release magnet scanner
+        mSensorManager.unregisterListener(magnetListener);
     }
 
 
-    private void log(String solution) {
-        Intent intent = new Intent("ch.apprun.intent.LOG");
-// format depends on app, see logbook format guideline
-        JSONObject log = new JSONObject();
-        try {
-            log.put("task","MetallDetektor");
-            log.put("solution",solution);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        // log.put(…);
-        intent.putExtra("ch.apprun.logmessage", log.toString());
-        startActivity(intent);
-    }
+
 
 }

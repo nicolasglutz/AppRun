@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Bootcamp</string>
     <string name="to_db">Save to Database!</string>
+    <string name="confirmation_title">Are you sure that you want to submit this solution</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
 </resources>
