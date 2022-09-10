@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                System.out.println("Logging works!");
+                log(textView_qr_content.getText().toString());
             }
         });
 
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 // format depends on app, see logbook format guideline
         JSONObject log = new JSONObject();
         try {
-            log.put("task","Metaldetector");
+            log.put("task","MetallDetektor");
             log.put("solution",solution);
         } catch (JSONException e) {
             e.printStackTrace();
