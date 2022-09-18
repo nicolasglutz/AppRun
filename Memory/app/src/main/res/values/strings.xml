@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Memory</string>
+    <string name="addPicture">Take new picture!</string>
+</resources>
