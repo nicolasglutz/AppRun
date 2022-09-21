@@ -87,14 +87,21 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //redirect to home activity
+                redirectToHome();
             }
         });
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 deletePhoto(currentPhotoPath);
+                redirectToHome();
             }
         });
+    }
+
+    private void redirectToHome(){
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
     }
 
     @Override
