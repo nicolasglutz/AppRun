@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Memory</string>
     <string name="addPicture">Take new picture!</string>
+    <string name="take_picture">Take Picture</string>
+    <string name="save_picture">Save Picture</string>
+    <string name="picture_that_got_taken">Picture that got taken</string>
+    <string name="cancel">Cancel</string>
 </resources>
