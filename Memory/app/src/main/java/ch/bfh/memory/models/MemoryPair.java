@@ -1,10 +1,10 @@
 package ch.bfh.memory.models;
 
-public class PicturePair {
+public class MemoryPair {
     MemoryCard CardOne;
     MemoryCard CardTwo;
 
-    public PicturePair(MemoryCard cardOne, MemoryCard cardTwo) {
+    public MemoryPair(MemoryCard cardOne, MemoryCard cardTwo) {
         CardOne = cardOne;
         CardTwo = cardTwo;
     }
