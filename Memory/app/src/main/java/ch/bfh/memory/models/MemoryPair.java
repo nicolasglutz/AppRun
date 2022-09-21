@@ -1,27 +1,36 @@
 package ch.bfh.memory.models;
 
 public class MemoryPair {
-    MemoryCard CardOne;
-    MemoryCard CardTwo;
+    MemoryCard cardOne;
+    MemoryCard cardTwo;
 
     public MemoryPair(MemoryCard cardOne, MemoryCard cardTwo) {
-        CardOne = cardOne;
-        CardTwo = cardTwo;
+        this.cardOne = cardOne;
+        this.cardTwo = cardTwo;
+    }
+
+    public MemoryPair(MemoryCard cardOne) {
+        this.cardOne = cardOne;
     }
 
     public MemoryCard getCardOne() {
-        return CardOne;
+        return cardOne;
     }
 
     public void setCardOne(MemoryCard cardOne) {
-        CardOne = cardOne;
+        this.cardOne = cardOne;
     }
 
     public MemoryCard getCardTwo() {
-        return CardTwo;
+        return cardTwo;
     }
 
     public void setCardTwo(MemoryCard cardTwo) {
-        CardTwo = cardTwo;
+        this.cardTwo = cardTwo;
+    }
+
+    public boolean isComplete()
+    {
+        return getCardOne() != null && getCardTwo() != null;
     }
 }

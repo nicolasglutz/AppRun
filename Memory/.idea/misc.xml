@@ -6,10 +6,13 @@
         <entry key="..\:/Users/Nici/Documents/GitHub/AppRun/Memory/app/src/main/res/layout/activity_camera.xml" value="0.18" />
         <entry key="..\:/Users/Nici/Documents/GitHub/AppRun/Memory/app/src/main/res/layout/activity_main.xml" value="0.15096251266464034" />
         <entry key="..\:/Users/Nici/Documents/GitHub/AppRun/Memory/app/src/main/res/xml/file_paths.xml" value="0.15096251266464034" />
+        <entry key="..\:/source/AppRun/Memory/app/src/main/res/layout/activity_camera.xml" value="0.1933876811594203" />
+        <entry key="..\:/source/AppRun/Memory/app/src/main/res/layout/activity_main.xml" value="0.5275330396475771" />
+        <entry key="..\:/source/AppRun/Memory/app/src/main/res/layout/card_laout.xml" value="0.21481481481481482" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
