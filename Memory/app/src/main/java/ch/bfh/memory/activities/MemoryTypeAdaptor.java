@@ -2,6 +2,7 @@ package ch.bfh.memory.activities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,7 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
     @Override
     public void onBindViewHolder(@NonNull MemoryViewHolder holder, int position) {
         TextView text = holder.getText();
-        ImageView img = holder.getImg();
+        ImageView imgV = holder.getImg();
         TextView id = holder.getTextid();
 
         text.setText(memoryCards.get(position).getWord());
@@ -48,9 +49,13 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
         id.setText(memoryCards.get(position).getId());
         File imgFile = new File(memoryCards.get(position).getPath());
 
+        imgV.setImageResource(R.drawable.ic_launcher_background);
+
         if(imgFile.exists()){
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            img.setImageBitmap(myBitmap);
+            imgV.setImageBitmap(myBitmap);
+
+
         }
     }
 

@@ -5,8 +5,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,7 +37,14 @@ public class MainActivity extends AppCompatActivity{
     {
         memoryListener = new MemoryOnClickListener();
         pairs = new ArrayList<>();
-        memoryCards = List.of(new MemoryCard("test", "miow", null), new MemoryCard("test2", "miow", null), new MemoryCard("test3", "miow", null), new MemoryCard("test4", "miow", null) );
+        File directory = getExternalFilesDir(Environment.DIRECTORY_PICTURES);;
+        File[] files = directory.listFiles();
+        memoryCards = new ArrayList<>();
+        for (int i = 0; i < files.length; i++)
+        {
+            memoryCards.add(new MemoryCard("test", files[i].getPath(), null));
+        }
+//        memoryCards = List.of(new MemoryCard("test", "miow", null), new MemoryCard("test2", "miow", null), new MemoryCard("test3", "miow", null), new MemoryCard("test4", "miow", null) );
         recyclerView = findViewById(R.id.recyclerViewMomory);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
