@@ -1,15 +1,32 @@
 package ch.bfh.memory.models;
 
-public class MemoryCard {
-    String word;
-    String path;
-    String id;
 
-    public MemoryCard(String word, String path, String id) {
+import java.io.Serializable;
+
+
+public class MemoryCard implements Serializable {
+
+    private static final long serialVersionUID = 2L;
+
+    public long idMemoryCard;
+
+    public String word;
+
+    public String path;
+
+
+    public MemoryCard(String word, String path, int idMemoryCard) {
         this.word = word;
         this.path = path;
-        this.id = id;
+        this.idMemoryCard = idMemoryCard;
     }
+
+    public MemoryCard(String word, String path){
+        this.word = word;
+        this.path = path;
+    }
+
+
 
     public String getWord() {
         return word;
@@ -27,12 +44,12 @@ public class MemoryCard {
         this.path = path;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setId(long id) {
+        this.idMemoryCard = id;
     }
 
-    public String getId()
+    public long getId()
     {
-        return id;
+        return idMemoryCard;
     }
 }

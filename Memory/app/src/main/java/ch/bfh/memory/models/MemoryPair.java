@@ -1,8 +1,18 @@
 package ch.bfh.memory.models;
 
-public class MemoryPair {
-    MemoryCard cardOne;
-    MemoryCard cardTwo;
+import java.io.Serializable;
+
+
+public class MemoryPair implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    public int idMemoryPair;
+
+    public MemoryCard cardOne;
+
+    public MemoryCard cardTwo;
+
 
     public MemoryPair(MemoryCard cardOne, MemoryCard cardTwo) {
         this.cardOne = cardOne;
@@ -13,24 +23,8 @@ public class MemoryPair {
         this.cardOne = cardOne;
     }
 
-    public MemoryCard getCardOne() {
-        return cardOne;
-    }
-
-    public void setCardOne(MemoryCard cardOne) {
-        this.cardOne = cardOne;
-    }
-
-    public MemoryCard getCardTwo() {
-        return cardTwo;
-    }
-
-    public void setCardTwo(MemoryCard cardTwo) {
-        this.cardTwo = cardTwo;
-    }
-
     public boolean isComplete()
     {
-        return getCardOne() != null && getCardTwo() != null;
+        return this.cardOne != null && this.cardTwo != null;
     }
 }

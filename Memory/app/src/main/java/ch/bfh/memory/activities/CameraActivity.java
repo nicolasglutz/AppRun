@@ -5,9 +5,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.core.CameraXConfig;
-import androidx.camera.core.ImageCapture;
-import androidx.camera.core.ImageCaptureException;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -17,8 +14,6 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,15 +23,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
-import com.google.mlkit.vision.barcode.common.Barcode;
 
-import java.io.DataInput;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
 
 import ch.bfh.memory.R;
 
@@ -88,6 +80,11 @@ public class CameraActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //redirect to home activity
                 redirectToHome();
+
+
+
+
+
             }
         });
         btn_cancel.setOnClickListener(new View.OnClickListener() {

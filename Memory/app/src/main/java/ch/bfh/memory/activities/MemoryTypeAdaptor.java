@@ -46,7 +46,7 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
 
         text.setText(memoryCards.get(position).getWord());
 
-        id.setText(memoryCards.get(position).getId());
+        id.setText("1");
         File imgFile = new File(memoryCards.get(position).getPath());
 
         imgV.setImageResource(R.drawable.ic_launcher_background);
