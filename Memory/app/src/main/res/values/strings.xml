@@ -5,4 +5,7 @@
     <string name="save_picture">Save Picture</string>
     <string name="picture_that_got_taken">Picture that got taken</string>
     <string name="cancel">Cancel</string>
+    <string name="logbook_btn">Send to logbook</string>
+    <string name="confirmation_title">Are you sure you want to submit this solution?</string>
+    <string name="confirmation_save">Yes save</string>
 </resources>

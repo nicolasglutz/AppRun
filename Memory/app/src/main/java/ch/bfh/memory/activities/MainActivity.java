@@ -1,20 +1,21 @@
 package ch.bfh.memory.activities;
 
+import android.app.AlertDialog;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-import android.view.View;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import ch.bfh.memory.R;
 import ch.bfh.memory.models.MemoryCard;
 import ch.bfh.memory.models.MemoryPair;
+import ch.bfh.memory.utils.LogAppUtil;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity{
     private static List<MemoryPair> pairs;
     public static View.OnClickListener memoryListener;
     public static RecyclerView.Adapter memoryAdaptor;
+    public Button logBookButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +43,24 @@ public class MainActivity extends AppCompatActivity{
         recyclerView.setLayoutManager(layoutManager);
         memoryAdaptor = new MemoryTypeAdaptor(memoryCards);
         recyclerView.setAdapter( memoryAdaptor );
-
+        logBookButton = findViewById(R.id.logbook_btn);
+        logBookButton.setOnClickListener((View view) -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage(R.string.confirmation_title)
+                    .setPositiveButton(R.string.confirmation_save, (dialog, id) -> {
+                        // Start logging activity
+                        startActivity(LogAppUtil.createIntent(pairs));
+                    })
+                    .setNegativeButton(R.string.cancel, (dialog, id) -> {
+                        // User cancelled the dialog
+                    });
+            builder.create().show();
+        });
     }
 
-    private static class MemoryOnClickListener implements View.OnClickListener {
 
+
+    private static class MemoryOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             int postion = recyclerView.getChildAdapterPosition(view);

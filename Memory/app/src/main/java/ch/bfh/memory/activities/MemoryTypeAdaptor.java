@@ -11,8 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.util.List;
 
@@ -20,6 +18,7 @@ import ch.bfh.memory.R;
 import ch.bfh.memory.models.MemoryCard;
 
 public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.MemoryViewHolder> {
+
     List<MemoryCard> memoryCards;
 
     public MemoryTypeAdaptor(List<MemoryCard> memoryCards) {
