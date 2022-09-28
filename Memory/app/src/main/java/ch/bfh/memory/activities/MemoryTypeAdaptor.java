@@ -2,7 +2,6 @@ package ch.bfh.memory.activities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.util.List;
 
@@ -21,6 +18,7 @@ import ch.bfh.memory.R;
 import ch.bfh.memory.models.MemoryCard;
 
 public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.MemoryViewHolder> {
+
     List<MemoryCard> memoryCards;
 
     public MemoryTypeAdaptor(List<MemoryCard> memoryCards) {
@@ -41,7 +39,7 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
     @Override
     public void onBindViewHolder(@NonNull MemoryViewHolder holder, int position) {
         TextView text = holder.getText();
-        ImageView imgV = holder.getImg();
+        ImageView img = holder.getImg();
         TextView id = holder.getTextid();
 
         text.setText(memoryCards.get(position).getWord());
@@ -49,13 +47,9 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
         id.setText("1");
         File imgFile = new File(memoryCards.get(position).getPath());
 
-        imgV.setImageResource(R.drawable.ic_launcher_background);
-
         if(imgFile.exists()){
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            imgV.setImageBitmap(myBitmap);
-
-
+            img.setImageBitmap(myBitmap);
         }
     }
 
