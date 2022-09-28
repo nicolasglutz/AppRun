@@ -1,6 +1,7 @@
 package ch.bfh.memory.activities;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,54 +11,83 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import ch.bfh.memory.R;
 import ch.bfh.memory.models.MemoryCard;
 import ch.bfh.memory.models.MemoryPair;
 import ch.bfh.memory.utils.LogAppUtil;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     private static RecyclerView recyclerView;
     private static List<MemoryCard> memoryCards;
     private static List<MemoryPair> pairs;
     public static View.OnClickListener memoryListener;
     public static RecyclerView.Adapter memoryAdaptor;
-    public Button logBookButton;
+    private Button logBookButton;
+    private Button clearConstraintsButton;
+    private Button clearAllButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        addListeners();
     }
 
-    private void init()
-    {
+    private void init() {
         memoryListener = new MemoryOnClickListener();
         pairs = new ArrayList<>();
-        memoryCards = List.of(new MemoryCard("test", "miow", null), new MemoryCard("test2", "miow", null), new MemoryCard("test3", "miow", null), new MemoryCard("test4", "miow", null) );
+        memoryCards = new ArrayList<>(List.of(new MemoryCard("test", "miow", null), new MemoryCard("test2", "miow", null), new MemoryCard("test3", "miow", null), new MemoryCard("test4", "miow", null)));
         recyclerView = findViewById(R.id.recyclerViewMomory);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
         memoryAdaptor = new MemoryTypeAdaptor(memoryCards);
-        recyclerView.setAdapter( memoryAdaptor );
+        recyclerView.setAdapter(memoryAdaptor);
         logBookButton = findViewById(R.id.logbook_btn);
-        logBookButton.setOnClickListener((View view) -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setMessage(R.string.confirmation_title)
-                    .setPositiveButton(R.string.confirmation_save, (dialog, id) -> {
-                        // Start logging activity
-                        startActivity(LogAppUtil.createIntent(pairs));
-                    })
-                    .setNegativeButton(R.string.cancel, (dialog, id) -> {
-                        // User cancelled the dialog
-                    });
-            builder.create().show();
-        });
+        clearAllButton = findViewById(R.id.clearall_btn);
+        clearConstraintsButton = findViewById(R.id.clearconstraints_btn);
     }
 
+    private void addListeners() {
+        logBookButton.setOnClickListener((View view) -> {
+            createConfirmationDialog(R.string.confirmation_title, R.string.confirmation_save, R.string.cancel, (dialog, id) -> {
+                startActivity(LogAppUtil.createIntent(pairs));
+            }, (dialog, id) -> {
+            });
+        });
+        clearAllButton.setOnClickListener((View view) -> {
+            createConfirmationDialog(R.string.clearall_title, R.string.clearall_save, R.string.cancel, (dialog, id) -> {
+                pairs.clear();
+                memoryCards.clear();
+                memoryAdaptor.notifyDataSetChanged();
+            }, (dialog, id) -> {
+            });
+        });
+        clearConstraintsButton.setOnClickListener((View view) -> createConfirmationDialog(R.string.clearconstraint_title,
+                R.string.clearconstraints_save, R.string.cancel,(dialog, id) -> {
+                    pairs.clear();
+                    memoryCards.forEach(card -> card.setId(null));
+                    memoryAdaptor.notifyDataSetChanged();
+                }, (dialog, id) -> {} ));
+    }
+
+    private void createConfirmationDialog(int text, int textPositive, int textNegative,
+                                          DialogInterface.OnClickListener listenerPositive,
+                                          DialogInterface.OnClickListener listenerNegative) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setMessage(text)
+                .setPositiveButton(textPositive, listenerPositive)
+                .setNegativeButton(textNegative, listenerNegative)
+                .create()
+                .show();
+    }
 
 
     private static class MemoryOnClickListener implements View.OnClickListener {
@@ -69,11 +99,10 @@ public class MainActivity extends AppCompatActivity{
         }
 
         private void addCard(MemoryCard card) {
-            if (!pairs.isEmpty())
-            {
+            if (!pairs.isEmpty()) {
                 MemoryPair memoryPair = pairs.get(pairs.size() - 1);
                 if (!memoryPair.isComplete()) {
-                    card.setId(String.valueOf(pairs.size()-1));
+                    card.setId(String.valueOf(pairs.size() - 1));
                     memoryPair.setCardTwo(card);
 
                     return;
@@ -81,7 +110,7 @@ public class MainActivity extends AppCompatActivity{
             }
             MemoryPair memoryPairNew = new MemoryPair(card);
             pairs.add(memoryPairNew);
-            card.setId(String.valueOf(pairs.size()-1));
+            card.setId(String.valueOf(pairs.size() - 1));
         }
     }
 }

@@ -8,4 +8,10 @@
     <string name="logbook_btn">Send to logbook</string>
     <string name="confirmation_title">Are you sure you want to submit this solution?</string>
     <string name="confirmation_save">Yes save</string>
+    <string name="clearall_title">Are you sure you want to delete the images</string>
+    <string name="clearall_save">Yes clear all</string>
+    <string name="clearall_btn">Remove all</string>
+    <string name="clearconstraint_title">Are you sure you want to delete the memory constraints</string>
+    <string name="clearconstraints_save">Yes remove constraints</string>
+    <string name="clearconstraints_btn">Remove constraints</string>
 </resources>
