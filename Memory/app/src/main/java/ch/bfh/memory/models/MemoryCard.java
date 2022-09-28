@@ -8,17 +8,17 @@ public class MemoryCard implements Serializable {
 
     private static final long serialVersionUID = 2L;
 
-    public long idMemoryCard;
+    public String id;
 
     public String word;
 
     public String path;
 
 
-    public MemoryCard(String word, String path, int idMemoryCard) {
+    public MemoryCard(String word, String path, String id) {
         this.word = word;
         this.path = path;
-        this.idMemoryCard = idMemoryCard;
+        this.id = id;
     }
 
     public MemoryCard(String word, String path){
@@ -44,12 +44,12 @@ public class MemoryCard implements Serializable {
         this.path = path;
     }
 
-    public void setId(long id) {
-        this.idMemoryCard = id;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public long getId()
+    public String getId()
     {
-        return idMemoryCard;
+        return id;
     }
 }

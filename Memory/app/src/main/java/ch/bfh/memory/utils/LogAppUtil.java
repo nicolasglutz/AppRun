@@ -22,8 +22,8 @@ public class LogAppUtil {
         for (MemoryPair pair : pairs) {
             if (pair.isComplete()) {
                 JSONArray arrayPair = new JSONArray();
-                arrayPair.put(pair.getCardOne().getWord());
-                arrayPair.put(pair.getCardTwo().getWord());
+                arrayPair.put(pair.cardOne.getWord());
+                arrayPair.put(pair.cardTwo.getWord());
                 solution.put(arrayPair);
             }
         }

@@ -54,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         init();
 
-//        writeObjectFile();
+       addListeners();
+//       writeObjectFile();
 
 //        loadObjectFile();
     }
@@ -102,8 +103,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
-        addListeners();
     }
 
     private void init() {
@@ -168,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 MemoryPair memoryPair = pairs.get(pairs.size() - 1);
                 if (!memoryPair.isComplete()) {
                     card.setId(String.valueOf(pairs.size() - 1));
-                    memoryPair.setCardTwo(card);
+                    memoryPair.cardTwo = (card);
 
                     return;
                 }
