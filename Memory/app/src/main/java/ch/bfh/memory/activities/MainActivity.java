@@ -39,6 +39,7 @@ import java.util.function.Function;
 
 import ch.bfh.memory.R;
 
+import ch.bfh.memory.interfaces.ClickListener;
 import ch.bfh.memory.models.MemoryCard;
 import ch.bfh.memory.models.MemoryPair;
 import ch.bfh.memory.utils.DataUtil;
@@ -47,14 +48,13 @@ import ch.bfh.memory.utils.LogAppUtil;
 public class MainActivity extends AppCompatActivity {
 
     private static RecyclerView recyclerView;
-    private static List<MemoryCard> memoryCards;
-    private static List<MemoryPair> pairs;
-    public static View.OnClickListener memoryListener;
     public static RecyclerView.Adapter memoryAdaptor;
     private Button logBookButton;
     private Button clearConstraintsButton;
     private Button clearAllButton;
     private Button btn_addCard;
+
+    public View.OnClickListener addSecondCardListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,17 +63,24 @@ public class MainActivity extends AppCompatActivity {
         init();
 
        addListeners();
+
+        memoryAdaptor = new MemoryTypeAdaptor(DataUtil.MemoryPairs, new ClickListener() {
+            @Override
+            public void onPositionClicked(int position) {
+                currentPosition = position;
+
+                launchQr(true);
+                Toast.makeText(MainActivity.this, "HOIIIII " + position, Toast.LENGTH_LONG).show();
+            }
+        });
+        recyclerView.setAdapter(memoryAdaptor);
     }
 
     private void init() {
-        memoryListener = new MemoryOnClickListener();
-        pairs = new ArrayList<>();
-        memoryCards = new ArrayList<>(List.of(new MemoryCard("test", "miow", null), new MemoryCard("test2", "miow", null), new MemoryCard("test3", "miow", null), new MemoryCard("test4", "miow", null)));
         recyclerView = findViewById(R.id.recyclerViewMomory);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(layoutManager);
-        memoryAdaptor = new MemoryTypeAdaptor(memoryCards);
-        recyclerView.setAdapter(memoryAdaptor);
+
         logBookButton = findViewById(R.id.logbook_btn);
         clearAllButton = findViewById(R.id.clearall_btn);
         clearConstraintsButton = findViewById(R.id.clearconstraints_btn);
@@ -85,29 +92,30 @@ public class MainActivity extends AppCompatActivity {
     private void addListeners() {
         logBookButton.setOnClickListener((View view) -> {
             createConfirmationDialog(R.string.confirmation_title, R.string.confirmation_save, R.string.cancel, (dialog, id) -> {
-                startActivity(LogAppUtil.createIntent(pairs));
+                startActivity(LogAppUtil.createIntent(DataUtil.MemoryPairs));
             }, (dialog, id) -> {
             });
         });
         clearAllButton.setOnClickListener((View view) -> {
             createConfirmationDialog(R.string.clearall_title, R.string.clearall_save, R.string.cancel, (dialog, id) -> {
-                pairs.clear();
-                memoryCards.clear();
+
+                DataUtil.MemoryPairs.clear();
+
                 memoryAdaptor.notifyDataSetChanged();
             }, (dialog, id) -> {
             });
         });
         clearConstraintsButton.setOnClickListener((View view) -> createConfirmationDialog(R.string.clearconstraint_title,
                 R.string.clearconstraints_save, R.string.cancel,(dialog, id) -> {
-                    pairs.clear();
-                    memoryCards.forEach(card -> card.setId(null));
+//                    pairs.clear();
+//                    memoryCards.forEach(card -> card.setId(null));
                     memoryAdaptor.notifyDataSetChanged();
                 }, (dialog, id) -> {} ));
 
         btn_addCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchQr();
+                launchQr(false);
             }
         });
 
@@ -125,33 +133,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private static class MemoryOnClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            int postion = recyclerView.getChildAdapterPosition(view);
-            addCard(memoryCards.get(postion));
-            memoryAdaptor.notifyItemChanged(postion);
-        }
-
-        private void addCard(MemoryCard card) {
-            if (!pairs.isEmpty()) {
-                MemoryPair memoryPair = pairs.get(pairs.size() - 1);
-                if (!memoryPair.isComplete()) {
-                    card.setId(String.valueOf(pairs.size() - 1));
-                    memoryPair.cardTwo = (card);
-
-                    return;
-                }
-            }
-            MemoryPair memoryPairNew = new MemoryPair(card);
-            pairs.add(memoryPairNew);
-            card.setId(String.valueOf(pairs.size() - 1));
-        }
-    }
-
-
-
-
+    boolean isSecond = false;
+    public static int currentPosition;
 
     // Register the launcher and result handler
     private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(),
@@ -160,23 +143,26 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
                 } else {
 
-
                     String qrContent = result.getContents();
                     String imagePath = result.getBarcodeImagePath();
 
+
                     MemoryCard mCard = new MemoryCard(qrContent,imagePath);
+                    if(isSecond){
+                        DataUtil.MemoryPairs.get(currentPosition).cardTwo = mCard;
+//                        Toast.makeText(MainActivity.this,"Pos: " +postion, Toast.LENGTH_LONG).show();
+                    }else{
+                        DataUtil.MemoryPairs.add(new MemoryPair(mCard));
+                    }
 
-                    DataUtil.MemoryCards.add(mCard);
-
-                    //Wie kann ich content von dem setzen??
-                    memoryAdaptor = new MemoryTypeAdaptor(DataUtil.MemoryCards);
+                    memoryAdaptor.notifyDataSetChanged();
 
                     Toast.makeText(MainActivity.this, "Scanned: " + mCard.path, Toast.LENGTH_LONG).show();
                 }
             });
 
     // Launch
-    public void launchQr() {
+    public void launchQr(boolean isSecond) {
         ScanOptions options = new ScanOptions();
         options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
         options.setPrompt("Scan a barcode");
@@ -187,50 +173,39 @@ public class MainActivity extends AppCompatActivity {
         options.addExtra(Intents.Scan.BARCODE_IMAGE_ENABLED, true);
         options.setOrientationLocked(false);
 
+        this.isSecond = isSecond;
 
         barcodeLauncher.launch(options);
     }
 
 
 
-//    /**
-//     * Scan the QR-Code
-//     */
-//    private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
-//            new ScanContract(),
-//            result -> {
-//                if (result.getContents() == null) {
-//                    Intent originalIntent = result.getOriginalIntent();
-//                    if (originalIntent == null) {
-//                        Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
-//                    } else if (originalIntent.hasExtra(Intents.Scan.MISSING_CAMERA_PERMISSION)) {
-//                        // alert user of missing Camera permission
-//                    }
-//                } else {
-//                    String code = result.getContents();
-//                    String path = result.getBarcodeImagePath();
-//                    if(createNewPair)
-//                        dataBaseHelper.CreatePair(new Card(path,code));
-//                    else if(!createNewPair && selectedPair != null){
-//                        dataBaseHelper.AddToPair(selectedPair,new Card(path, code));
-//                    }
-//                    selectedPair = null;
-//                    Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-//                    loadRecyclerView();
+//    private static class MemoryOnClickListener implements View.OnClickListener {
+//        @Override
+//        public void onClick(View view) {
+//            currentView = view;
+//
+//            int postion = recyclerView.getChildAdapterPosition(view);
+//            addCard(memoryCards.get(postion));
+//            memoryAdaptor.notifyItemChanged(postion);
+//        }
+//
+//        private void addCard(MemoryCard card) {
+//            if (!pairs.isEmpty()) {
+//                MemoryPair memoryPair = pairs.get(pairs.size() - 1);
+//                if (!memoryPair.isComplete()) {
+//                    card.setId(String.valueOf(pairs.size() - 1));
+//                    memoryPair.cardTwo = (card);
+//
+//                    return;
 //                }
-//            });
-//    public void launchQr() {
-//        ScanOptions scanOptions = new ScanOptions();
-//        scanOptions.setCaptureActivity(MyCaptureActivity.class);
-//        scanOptions.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
-//        scanOptions.setOrientationLocked(false);
-//        scanOptions.addExtra(Intents.Scan.BARCODE_IMAGE_ENABLED, true);
-//        scanOptions.setBeepEnabled(false);
-//        scanOptions.setPrompt("Scan a QR code");
-//        qrLauncher.launch(scanOptions);
+//            }
+//            MemoryPair memoryPairNew = new MemoryPair(card);
+//            pairs.add(memoryPairNew);
+//            card.setId(String.valueOf(pairs.size() - 1));
+//        }
 //    }
+//
 
 
-
-
-}
+    }

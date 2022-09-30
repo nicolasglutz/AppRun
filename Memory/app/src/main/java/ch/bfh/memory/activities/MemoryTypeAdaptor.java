@@ -5,87 +5,73 @@ import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import ch.bfh.memory.R;
+import ch.bfh.memory.interfaces.ClickListener;
 import ch.bfh.memory.models.MemoryCard;
+import ch.bfh.memory.models.MemoryPair;
 
 public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.MemoryViewHolder> {
 
-    List<MemoryCard> memoryCards;
+    List<MemoryPair> memoryPairs;
+//    public View.OnClickListener buttonListener;
 
-    public MemoryTypeAdaptor(List<MemoryCard> memoryCards) {
-        this.memoryCards = memoryCards;
+    private final ClickListener listener;
+
+    public MemoryTypeAdaptor(List<MemoryPair> memoryPairs, ClickListener listener) {
+        this.memoryPairs = memoryPairs;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public MemoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_laout, parent, false);
+                .inflate(R.layout.card_layout, parent, false);
 
-        MemoryViewHolder viewHolder = new MemoryViewHolder(view);
-        view.setOnClickListener(MainActivity.memoryListener);
+        MemoryViewHolder viewHolder = new MemoryViewHolder(view,listener);
+//        view.setOnClickListener(MainActivity.memoryListener);
+
+
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull MemoryViewHolder holder, int position) {
-        TextView text = holder.getText();
-        ImageView img = holder.getImg();
-        TextView id = holder.getTextid();
 
-        text.setText(memoryCards.get(position).getWord());
+        MemoryCard mOne = memoryPairs.get(position).cardOne;
+        MemoryCard mTwo = memoryPairs.get(position).cardTwo;
 
-        id.setText(memoryCards.get(position).id);
-        File imgFile = new File(memoryCards.get(position).getPath());
+        if(mOne != null){
+            holder.getTextOne().setText(memoryPairs.get(position).cardOne.getWord());
 
-        if(imgFile.exists()){
+            holder.getImgOne().setImageBitmap(getBitmap(memoryPairs.get(position).cardOne.getPath()));
+        }
 
-            holder.img.setImageBitmap(getBitmap(memoryCards.get(position).path));
-//            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-//            img.setImageBitmap(myBitmap);
+        if(mTwo != null){
+            holder.getTextTwo().setText(memoryPairs.get(position).cardTwo.getWord());
+
+            holder.getImgTwo().setImageBitmap(getBitmap(memoryPairs.get(position).cardTwo.getPath()));
+
+            holder.setButtonVisibility(View.INVISIBLE);
         }
     }
 
     @Override
     public int getItemCount() {
-        return memoryCards.size();
+        return memoryPairs.size();
     }
-
-    public static class MemoryViewHolder extends RecyclerView.ViewHolder {
-        private TextView text;
-        private ImageView img;
-        private TextView textid;
-
-        public MemoryViewHolder(View viewItem) {
-            super(viewItem);
-            this.text = (TextView) viewItem.findViewById(R.id.memory_text);
-            this.img = viewItem.findViewById(R.id.img_memory);
-            this.textid = viewItem.findViewById(R.id.memory_id);
-        }
-
-        public TextView getText() {
-            return text;
-        }
-
-        public ImageView getImg() {
-            return img;
-        }
-
-        public TextView getTextid() {
-            return textid;
-        }
-
-    }
-
 
     public Bitmap getBitmap(String path){
         try{
@@ -100,4 +86,59 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
         return  null;
     }
 
+    /**
+     * This class is for the layout
+     */
+    public static class MemoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private TextView card_text_one;
+        private ImageView card_image_one;
+        private TextView card_text_two;
+        private ImageView card_image_two;
+
+        private Button btn_add_second;
+
+        private WeakReference<ClickListener> listenerRef;
+
+        public MemoryViewHolder(View viewItem, ClickListener listener) {
+            super(viewItem);
+            this.card_text_one = (TextView) viewItem.findViewById(R.id.card_text_one);
+            this.card_text_two = viewItem.findViewById(R.id.card_text_two);
+            this.card_image_one = viewItem.findViewById(R.id.card_image_one);
+            this.card_image_two = viewItem.findViewById(R.id.card_image_two);
+            this.btn_add_second = viewItem.findViewById(R.id.btn_add_second);
+
+            listenerRef = new WeakReference<>(listener);
+
+            btn_add_second.setOnClickListener(this);
+        }
+
+        public void setButtonVisibility(int visibility){
+            this.btn_add_second.setVisibility(visibility);
+        }
+
+        public TextView getTextOne() {
+            return card_text_one;
+        }
+        public TextView getTextTwo() {
+            return card_text_two;
+        }
+
+        public ImageView getImgOne() {
+            return card_image_one;
+        }
+        public ImageView getImgTwo() {
+            return card_image_two;
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (view.getId() == btn_add_second.getId()) {
+                Toast.makeText(view.getContext(), "ITEM PRESSED = " + String.valueOf(getAdapterPosition()), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(view.getContext(), "ROW PRESSED = " + String.valueOf(getAdapterPosition()), Toast.LENGTH_SHORT).show();
+            }
+
+            listenerRef.get().onPositionClicked(getAdapterPosition());
+        }
+    }
 }

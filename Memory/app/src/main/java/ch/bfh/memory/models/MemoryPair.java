@@ -7,7 +7,7 @@ public class MemoryPair implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public int idMemoryPair;
+    public int id;
 
     public MemoryCard cardOne;
 
