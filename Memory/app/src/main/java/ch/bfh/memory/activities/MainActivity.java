@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +16,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
+
+import com.google.zxing.client.android.Intents;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +41,7 @@ import ch.bfh.memory.R;
 
 import ch.bfh.memory.models.MemoryCard;
 import ch.bfh.memory.models.MemoryPair;
+import ch.bfh.memory.utils.DataUtil;
 import ch.bfh.memory.utils.LogAppUtil;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private Button logBookButton;
     private Button clearConstraintsButton;
     private Button clearAllButton;
+    private Button btn_addCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,54 +63,6 @@ public class MainActivity extends AppCompatActivity {
         init();
 
        addListeners();
-//       writeObjectFile();
-
-//        loadObjectFile();
-    }
-
-    private void loadObjectFile(){
-
-        try{
-            FileInputStream fis = getApplicationContext().openFileInput("cards.txt");
-            ObjectInputStream is = new ObjectInputStream(fis);
-            MemoryCard mCard = (MemoryCard) is.readObject();
-
-            Log.d("SERIALIZECARDS", "loadObjectFile: " + mCard.path);
-
-            is.close();
-            fis.close();
-
-        }catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    private void writeObjectFile(){
-
-
-        try {
-
-            FileOutputStream fos = null;
-            fos = getApplicationContext().openFileOutput("cards.txt", Context.MODE_PRIVATE);
-
-            ObjectOutputStream os = new ObjectOutputStream(fos);
-            os.writeObject(new MemoryCard("dasdis","dsfsdfds"));
-            os.close();
-            fos.close();
-
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     private void init() {
@@ -117,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
         logBookButton = findViewById(R.id.logbook_btn);
         clearAllButton = findViewById(R.id.clearall_btn);
         clearConstraintsButton = findViewById(R.id.clearconstraints_btn);
+
+        btn_addCard = findViewById(R.id.btn_addCard);
+
     }
 
     private void addListeners() {
@@ -140,6 +103,14 @@ public class MainActivity extends AppCompatActivity {
                     memoryCards.forEach(card -> card.setId(null));
                     memoryAdaptor.notifyDataSetChanged();
                 }, (dialog, id) -> {} ));
+
+        btn_addCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchQr();
+            }
+        });
+
     }
 
     private void createConfirmationDialog(int text, int textPositive, int textNegative,
@@ -177,4 +148,89 @@ public class MainActivity extends AppCompatActivity {
             card.setId(String.valueOf(pairs.size() - 1));
         }
     }
+
+
+
+
+
+    // Register the launcher and result handler
+    private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(),
+            result -> {
+                if(result.getContents() == null) {
+                    Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
+                } else {
+
+
+                    String qrContent = result.getContents();
+                    String imagePath = result.getBarcodeImagePath();
+
+                    MemoryCard mCard = new MemoryCard(qrContent,imagePath);
+
+                    DataUtil.MemoryCards.add(mCard);
+
+                    //Wie kann ich content von dem setzen??
+                    memoryAdaptor = new MemoryTypeAdaptor(DataUtil.MemoryCards);
+
+                    Toast.makeText(MainActivity.this, "Scanned: " + mCard.path, Toast.LENGTH_LONG).show();
+                }
+            });
+
+    // Launch
+    public void launchQr() {
+        ScanOptions options = new ScanOptions();
+        options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
+        options.setPrompt("Scan a barcode");
+        options.setCaptureActivity(MyCaptureActivity.class);
+        options.setCameraId(0);  // Use a specific camera of the device
+        options.setBeepEnabled(false);
+        options.setBarcodeImageEnabled(true);
+        options.addExtra(Intents.Scan.BARCODE_IMAGE_ENABLED, true);
+        options.setOrientationLocked(false);
+
+
+        barcodeLauncher.launch(options);
+    }
+
+
+
+//    /**
+//     * Scan the QR-Code
+//     */
+//    private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
+//            new ScanContract(),
+//            result -> {
+//                if (result.getContents() == null) {
+//                    Intent originalIntent = result.getOriginalIntent();
+//                    if (originalIntent == null) {
+//                        Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+//                    } else if (originalIntent.hasExtra(Intents.Scan.MISSING_CAMERA_PERMISSION)) {
+//                        // alert user of missing Camera permission
+//                    }
+//                } else {
+//                    String code = result.getContents();
+//                    String path = result.getBarcodeImagePath();
+//                    if(createNewPair)
+//                        dataBaseHelper.CreatePair(new Card(path,code));
+//                    else if(!createNewPair && selectedPair != null){
+//                        dataBaseHelper.AddToPair(selectedPair,new Card(path, code));
+//                    }
+//                    selectedPair = null;
+//                    Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+//                    loadRecyclerView();
+//                }
+//            });
+//    public void launchQr() {
+//        ScanOptions scanOptions = new ScanOptions();
+//        scanOptions.setCaptureActivity(MyCaptureActivity.class);
+//        scanOptions.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
+//        scanOptions.setOrientationLocked(false);
+//        scanOptions.addExtra(Intents.Scan.BARCODE_IMAGE_ENABLED, true);
+//        scanOptions.setBeepEnabled(false);
+//        scanOptions.setPrompt("Scan a QR code");
+//        qrLauncher.launch(scanOptions);
+//    }
+
+
+
+
 }

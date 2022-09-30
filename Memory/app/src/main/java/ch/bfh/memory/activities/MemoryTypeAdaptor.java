@@ -44,12 +44,14 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
 
         text.setText(memoryCards.get(position).getWord());
 
-        id.setText("1");
+        id.setText(memoryCards.get(position).id);
         File imgFile = new File(memoryCards.get(position).getPath());
 
         if(imgFile.exists()){
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            img.setImageBitmap(myBitmap);
+
+            holder.img.setImageBitmap(getBitmap(memoryCards.get(position).path));
+//            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+//            img.setImageBitmap(myBitmap);
         }
     }
 
@@ -83,4 +85,19 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
         }
 
     }
+
+
+    public Bitmap getBitmap(String path){
+        try{
+            File img = new File(path);
+            if(img.exists()){
+                Bitmap bitmap = BitmapFactory.decodeFile(img.getAbsolutePath());
+                return bitmap;
+            }
+        }catch (Exception exception){
+            return null;
+        }
+        return  null;
+    }
+
 }
