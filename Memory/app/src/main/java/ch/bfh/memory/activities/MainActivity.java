@@ -22,6 +22,7 @@ import com.journeyapps.barcodescanner.ScanOptions;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import ch.bfh.memory.R;
@@ -109,7 +110,8 @@ public class MainActivity extends AppCompatActivity {
 
                 DataUtil.MemoryPairs.clear();
 
-                memoryAdaptor.notifyDataSetChanged();
+                loadRecycleView();
+
             }, (dialog, id) -> {
             });
         });
@@ -118,19 +120,19 @@ public class MainActivity extends AppCompatActivity {
         listener_removeAllConnections = ((View view) -> createConfirmationDialog(R.string.clearconstraint_title,
                 R.string.clearconstraints_save, R.string.cancel, (dialog, id) -> {
 
-                    List<MemoryPair> currentMemoryPairs = DataUtil.MemoryPairs;
+                    ArrayList<MemoryPair> currentMemoryPairs = new ArrayList<MemoryPair>(DataUtil.MemoryPairs);
 
                     DataUtil.MemoryPairs.clear();
 
                     currentMemoryPairs.forEach(pair -> {
-                        if(pair.cardTwo != null){
+                        if (pair.cardTwo != null) {
                             DataUtil.MemoryPairs.add(new MemoryPair(pair.cardOne));
                             DataUtil.MemoryPairs.add(new MemoryPair(pair.cardTwo));
-                        }else {
+                        } else {
                             DataUtil.MemoryPairs.add(new MemoryPair(pair.cardOne));
                         }
                     });
-                    memoryAdaptor.notifyDataSetChanged();
+                    loadRecycleView();
                 }, (dialog, id) -> {
                 }));
 
@@ -156,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 currentPosition = position;
                 DataUtil.MemoryPairs.remove(position);
 
-                memoryAdaptor.notifyDataSetChanged();
+                loadRecycleView();
             }
 
             @Override
@@ -167,25 +169,34 @@ public class MainActivity extends AppCompatActivity {
                 MemoryCard mCardOne = mPair.cardOne;
                 MemoryCard mCardTwo = mPair.cardTwo;
 
-                if(mCardOne != null && mCardTwo != null){
+                if (mCardOne != null && mCardTwo != null) {
 
                     DataUtil.MemoryPairs.remove(position);
 
                     DataUtil.MemoryPairs.add(new MemoryPair(mCardOne));
                     DataUtil.MemoryPairs.add(new MemoryPair(mCardTwo));
 
-                }else {
-                    Toast.makeText(MainActivity.this,"Cant split a single card!", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Cant split a single card!", Toast.LENGTH_LONG).show();
                 }
 
-                memoryAdaptor.notifyDataSetChanged();
+                loadRecycleView();
             }
         };
 
     }
 
     /**
+     * We need this function becuase .notifyDataSetChanged doesnt work properly
+     */
+    public void loadRecycleView(){
+        memoryAdaptor = new MemoryTypeAdaptor(DataUtil.MemoryPairs, listener_addSecondCard);
+        recyclerView.setAdapter(memoryAdaptor);
+    }
+
+    /**
      * Helper for creating a confirmation dialog
+     *
      * @param text
      * @param textPositive
      * @param textNegative
@@ -227,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                         DataUtil.MemoryPairs.add(new MemoryPair(mCard));
                     }
 
-                    memoryAdaptor.notifyDataSetChanged();
+                    loadRecycleView();
 
                     Toast.makeText(MainActivity.this, "Qr Code sucessfully scanned!", Toast.LENGTH_LONG).show();
                 }
@@ -235,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Launch the qr code activity
+     *
      * @param isSecond if the qr scanner should scan the code for the second card
      */
     public void launchQr(boolean isSecond) {
@@ -255,20 +267,21 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         savePairs();
     }
 
     private String DataFilename = "cards.txt";
+
     /**
      * Method for saving all pairs that exist
      */
-    private void savePairs(){
+    private void savePairs() {
         FileOutputStream fos;
 
         try {
-            fos = getApplicationContext().openFileOutput(DataFilename,Context.MODE_PRIVATE);
+            fos = getApplicationContext().openFileOutput(DataFilename, Context.MODE_PRIVATE);
             getApplicationContext().fileList();
             DataUtil.writePairsFile(fos);
 
@@ -280,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Method for loading all pairs on app startup
      */
-    private void loadPairs(){
+    private void loadPairs() {
         FileInputStream fis;
 
         try {
