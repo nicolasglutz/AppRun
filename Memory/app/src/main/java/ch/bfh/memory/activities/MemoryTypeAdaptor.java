@@ -25,7 +25,6 @@ import ch.bfh.memory.models.MemoryPair;
 public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.MemoryViewHolder> {
 
     List<MemoryPair> memoryPairs;
-
     private final ClickListener listener;
 
     public MemoryTypeAdaptor(List<MemoryPair> memoryPairs, ClickListener listener) {
@@ -45,22 +44,29 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
         return viewHolder;
     }
 
+    /**
+     * Set the content of the cards
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull MemoryViewHolder holder, int position) {
 
         MemoryCard mOne = memoryPairs.get(position).cardOne;
         MemoryCard mTwo = memoryPairs.get(position).cardTwo;
 
+        //Set the content of the first card
         if (mOne != null) {
             holder.getTextOne().setText(memoryPairs.get(position).cardOne.getWord());
 
-            holder.getImgOne().setImageBitmap(getBitmap(memoryPairs.get(position).cardOne.getPath()));
+            holder.getImgOne().setImageBitmap(getBitmapFromPath(memoryPairs.get(position).cardOne.getPath()));
         }
 
+        //Set the content of the second card
         if (mTwo != null) {
             holder.getTextTwo().setText(memoryPairs.get(position).cardTwo.getWord());
 
-            holder.getImgTwo().setImageBitmap(getBitmap(memoryPairs.get(position).cardTwo.getPath()));
+            holder.getImgTwo().setImageBitmap(getBitmapFromPath(memoryPairs.get(position).cardTwo.getPath()));
 
             holder.setButtonVisibility(View.INVISIBLE);
         }
@@ -71,7 +77,7 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
         return memoryPairs.size();
     }
 
-    public Bitmap getBitmap(String path) {
+    public Bitmap getBitmapFromPath(String path) {
         try {
             File img = new File(path);
             if (img.exists()) {
@@ -88,13 +94,26 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
      * This class is for the layout
      */
     public static class MemoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        /**
+         * Textviews
+         */
         private TextView card_text_one;
-        private ImageView card_image_one;
         private TextView card_text_two;
+
+        /**
+         * Imageviews
+         */
+        private ImageView card_image_one;
         private ImageView card_image_two;
 
+
+
+        /**
+         * Buttons
+         */
         private Button btn_add_second;
         private Button btn_delete;
+        private Button btn_split;
 
         private WeakReference<ClickListener> listenerRef;
 
@@ -109,11 +128,13 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
 
             this.btn_add_second = viewItem.findViewById(R.id.btn_add_second);
             this.btn_delete = viewItem.findViewById(R.id.btn_delete);
+            this.btn_split = viewItem.findViewById(R.id.btn_split);
 
             listenerRef = new WeakReference<>(listener);
 
             btn_add_second.setOnClickListener(this);
             btn_delete.setOnClickListener(this);
+            btn_split.setOnClickListener(this);
 
         }
 
@@ -140,11 +161,11 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
         @Override
         public void onClick(View view) {
             if (view.getId() == btn_add_second.getId()) {
-                Toast.makeText(view.getContext(), "ITEM PRESSED = " + String.valueOf(getAdapterPosition()), Toast.LENGTH_SHORT).show();
                 listenerRef.get().onAddSecondClicked(getAdapterPosition());
             } else if (view.getId() == btn_delete.getId()) {
-                Toast.makeText(view.getContext(), "ITEM PRESSED = " + String.valueOf(getAdapterPosition()), Toast.LENGTH_SHORT).show();
                 listenerRef.get().onDeleteClick(getAdapterPosition());
+            } else if (view.getId() == btn_split.getId()) {
+                listenerRef.get().onSplitClick(getAdapterPosition());
             } else {
                 Toast.makeText(view.getContext(), "ROW PRESSED = " + String.valueOf(getAdapterPosition()), Toast.LENGTH_SHORT).show();
             }
