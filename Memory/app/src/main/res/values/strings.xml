@@ -16,4 +16,5 @@
     <string name="clearconstraints_btn">Remove constraints</string>
     <string name="add_new_card">Add new Card</string>
     <string name="add">add</string>
+    <string name="delete">Delete</string>
 </resources>

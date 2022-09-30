@@ -62,21 +62,42 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         init();
 
-       addListeners();
+        addListeners();
 
         memoryAdaptor = new MemoryTypeAdaptor(DataUtil.MemoryPairs, new ClickListener() {
             @Override
-            public void onPositionClicked(int position) {
+            public void onAddSecondClicked(int position) {
                 currentPosition = position;
-
                 launchQr(true);
-                Toast.makeText(MainActivity.this, "HOIIIII " + position, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onDeleteClick(int position) {
+                currentPosition = position;
+                DataUtil.MemoryPairs.remove(position);
+
+                memoryAdaptor.notifyDataSetChanged();
             }
         });
+
         recyclerView.setAdapter(memoryAdaptor);
     }
 
     private void init() {
+        //load data from file
+        FileInputStream fis;
+
+        try {
+            fis = getApplicationContext().openFileInput("cards.txt");
+            String[] files = getApplicationContext().fileList();
+            DataUtil.loadPairsFile(fis);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+
         recyclerView = findViewById(R.id.recyclerViewMomory);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(layoutManager);
@@ -106,11 +127,12 @@ public class MainActivity extends AppCompatActivity {
             });
         });
         clearConstraintsButton.setOnClickListener((View view) -> createConfirmationDialog(R.string.clearconstraint_title,
-                R.string.clearconstraints_save, R.string.cancel,(dialog, id) -> {
+                R.string.clearconstraints_save, R.string.cancel, (dialog, id) -> {
 //                    pairs.clear();
 //                    memoryCards.forEach(card -> card.setId(null));
                     memoryAdaptor.notifyDataSetChanged();
-                }, (dialog, id) -> {} ));
+                }, (dialog, id) -> {
+                }));
 
         btn_addCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
     // Register the launcher and result handler
     private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(),
             result -> {
-                if(result.getContents() == null) {
+                if (result.getContents() == null) {
                     Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
                 } else {
 
@@ -147,11 +169,11 @@ public class MainActivity extends AppCompatActivity {
                     String imagePath = result.getBarcodeImagePath();
 
 
-                    MemoryCard mCard = new MemoryCard(qrContent,imagePath);
-                    if(isSecond){
+                    MemoryCard mCard = new MemoryCard(qrContent, imagePath);
+                    if (isSecond) {
                         DataUtil.MemoryPairs.get(currentPosition).cardTwo = mCard;
 //                        Toast.makeText(MainActivity.this,"Pos: " +postion, Toast.LENGTH_LONG).show();
-                    }else{
+                    } else {
                         DataUtil.MemoryPairs.add(new MemoryPair(mCard));
                     }
 
@@ -178,34 +200,18 @@ public class MainActivity extends AppCompatActivity {
         barcodeLauncher.launch(options);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FileOutputStream fos;
 
+        try {
+            fos = getApplicationContext().openFileOutput("cards.txt",Context.MODE_PRIVATE);
+            getApplicationContext().fileList();
+            DataUtil.writePairsFile(fos);
 
-//    private static class MemoryOnClickListener implements View.OnClickListener {
-//        @Override
-//        public void onClick(View view) {
-//            currentView = view;
-//
-//            int postion = recyclerView.getChildAdapterPosition(view);
-//            addCard(memoryCards.get(postion));
-//            memoryAdaptor.notifyItemChanged(postion);
-//        }
-//
-//        private void addCard(MemoryCard card) {
-//            if (!pairs.isEmpty()) {
-//                MemoryPair memoryPair = pairs.get(pairs.size() - 1);
-//                if (!memoryPair.isComplete()) {
-//                    card.setId(String.valueOf(pairs.size() - 1));
-//                    memoryPair.cardTwo = (card);
-//
-//                    return;
-//                }
-//            }
-//            MemoryPair memoryPairNew = new MemoryPair(card);
-//            pairs.add(memoryPairNew);
-//            card.setId(String.valueOf(pairs.size() - 1));
-//        }
-//    }
-//
-
-
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
+}

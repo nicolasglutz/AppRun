@@ -25,7 +25,6 @@ import ch.bfh.memory.models.MemoryPair;
 public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.MemoryViewHolder> {
 
     List<MemoryPair> memoryPairs;
-//    public View.OnClickListener buttonListener;
 
     private final ClickListener listener;
 
@@ -40,8 +39,7 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_layout, parent, false);
 
-        MemoryViewHolder viewHolder = new MemoryViewHolder(view,listener);
-//        view.setOnClickListener(MainActivity.memoryListener);
+        MemoryViewHolder viewHolder = new MemoryViewHolder(view, listener);
 
 
         return viewHolder;
@@ -53,13 +51,13 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
         MemoryCard mOne = memoryPairs.get(position).cardOne;
         MemoryCard mTwo = memoryPairs.get(position).cardTwo;
 
-        if(mOne != null){
+        if (mOne != null) {
             holder.getTextOne().setText(memoryPairs.get(position).cardOne.getWord());
 
             holder.getImgOne().setImageBitmap(getBitmap(memoryPairs.get(position).cardOne.getPath()));
         }
 
-        if(mTwo != null){
+        if (mTwo != null) {
             holder.getTextTwo().setText(memoryPairs.get(position).cardTwo.getWord());
 
             holder.getImgTwo().setImageBitmap(getBitmap(memoryPairs.get(position).cardTwo.getPath()));
@@ -73,17 +71,17 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
         return memoryPairs.size();
     }
 
-    public Bitmap getBitmap(String path){
-        try{
+    public Bitmap getBitmap(String path) {
+        try {
             File img = new File(path);
-            if(img.exists()){
+            if (img.exists()) {
                 Bitmap bitmap = BitmapFactory.decodeFile(img.getAbsolutePath());
                 return bitmap;
             }
-        }catch (Exception exception){
+        } catch (Exception exception) {
             return null;
         }
-        return  null;
+        return null;
     }
 
     /**
@@ -96,29 +94,37 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
         private ImageView card_image_two;
 
         private Button btn_add_second;
+        private Button btn_delete;
 
         private WeakReference<ClickListener> listenerRef;
 
         public MemoryViewHolder(View viewItem, ClickListener listener) {
             super(viewItem);
+
             this.card_text_one = (TextView) viewItem.findViewById(R.id.card_text_one);
             this.card_text_two = viewItem.findViewById(R.id.card_text_two);
+
             this.card_image_one = viewItem.findViewById(R.id.card_image_one);
             this.card_image_two = viewItem.findViewById(R.id.card_image_two);
+
             this.btn_add_second = viewItem.findViewById(R.id.btn_add_second);
+            this.btn_delete = viewItem.findViewById(R.id.btn_delete);
 
             listenerRef = new WeakReference<>(listener);
 
             btn_add_second.setOnClickListener(this);
+            btn_delete.setOnClickListener(this);
+
         }
 
-        public void setButtonVisibility(int visibility){
+        public void setButtonVisibility(int visibility) {
             this.btn_add_second.setVisibility(visibility);
         }
 
         public TextView getTextOne() {
             return card_text_one;
         }
+
         public TextView getTextTwo() {
             return card_text_two;
         }
@@ -126,6 +132,7 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
         public ImageView getImgOne() {
             return card_image_one;
         }
+
         public ImageView getImgTwo() {
             return card_image_two;
         }
@@ -134,11 +141,15 @@ public class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.Me
         public void onClick(View view) {
             if (view.getId() == btn_add_second.getId()) {
                 Toast.makeText(view.getContext(), "ITEM PRESSED = " + String.valueOf(getAdapterPosition()), Toast.LENGTH_SHORT).show();
+                listenerRef.get().onAddSecondClicked(getAdapterPosition());
+            } else if (view.getId() == btn_delete.getId()) {
+                Toast.makeText(view.getContext(), "ITEM PRESSED = " + String.valueOf(getAdapterPosition()), Toast.LENGTH_SHORT).show();
+                listenerRef.get().onDeleteClick(getAdapterPosition());
             } else {
                 Toast.makeText(view.getContext(), "ROW PRESSED = " + String.valueOf(getAdapterPosition()), Toast.LENGTH_SHORT).show();
             }
 
-            listenerRef.get().onPositionClicked(getAdapterPosition());
+
         }
     }
 }
