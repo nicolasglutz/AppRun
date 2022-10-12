@@ -18,6 +18,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 
 import org.osmdroid.LocationListenerProxy;
 import org.osmdroid.api.IMapController;
@@ -41,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import ch.bfh.treasuremap.R;
+import ch.bfh.treasuremap.utils.LogAppUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static Drawable myIcon;
 
+
+    //buttons
+    public Button btn_toLogBook;
+    public Button btn_center;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +75,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        btn_toLogBook = (Button) findViewById(R.id.btn_toLogBook);
+        btn_center = (Button) findViewById(R.id.btn_center);
+
+        addListener();
+
         Context ctx = this.getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
@@ -81,12 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
         map.setMultiTouchControls(true);
-
-
-        //init the compass
-//        CompassOverlay compassOverlay = new CompassOverlay(this, map);
-//        compassOverlay.enableCompass();
-//        map.getOverlays().add(compassOverlay);
+        
 
         //init my current location
         this.myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()), map);
@@ -129,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!otherMarkerClicked) {
                     startMarker.setPosition(point);
+                    startMarker.setTitle("Position");
                     startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
                     mapView.getOverlays().add(startMarker);
                     mapView.invalidate();
@@ -146,25 +154,24 @@ public class MainActivity extends AppCompatActivity {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 
-
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 2000, new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
                 GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
-                if(!firstLocationSet){
+                if (!firstLocationSet) {
                     map.getController().setCenter(point);
                     firstLocationSet = true;
                 }
 
 
-
                 if (lastLocationMarker != null)
                     map.getOverlays().remove(lastLocationMarker);
+
+                currentLocation = point;
 
                 lastLocationMarker = new Marker(map);
                 lastLocationMarker.setPosition(point);
                 lastLocationMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-
 
 
                 lastLocationMarker.setIcon(myIcon);
@@ -182,6 +189,24 @@ public class MainActivity extends AppCompatActivity {
     private static boolean firstLocationSet = false;
     private static boolean otherMarkerClicked = false;
 
+    private GeoPoint currentLocation;
+
+
+    private void addListener() {
+        btn_toLogBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(LogAppUtil.createIntent(map.getOverlays()));
+            }
+        });
+
+        btn_center.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                map.getController().setCenter(currentLocation);
+            }
+        });
+    }
 
     @Override
     public void onResume() {
