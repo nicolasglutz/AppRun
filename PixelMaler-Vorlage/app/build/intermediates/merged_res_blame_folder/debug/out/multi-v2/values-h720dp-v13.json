@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "ch.apprun.pixelmaler.app-mergeDebugResources-19:/values-h720dp-v13/values-h720dp-v13.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\varot\\.gradle\\caches\\transforms-3\\36ecbbb481602c3ae48671558246e914\\transformed\\appcompat-1.5.1\\res\\values-h720dp-v13\\values-h720dp-v13.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "66",
+                        "endOffsets": "117"
+                    }
+                }
+            ]
+        }
+    ]
+}
