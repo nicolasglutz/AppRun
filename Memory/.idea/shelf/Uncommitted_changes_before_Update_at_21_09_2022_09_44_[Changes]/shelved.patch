@@ -1,0 +1,203 @@
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    id 'com.android.application'\r\n}\r\n\r\nandroid {\r\n    compileSdk 32\r\n\r\n    defaultConfig {\r\n        applicationId \"ch.bfh.memory\"\r\n        minSdk 29\r\n        targetSdk 32\r\n        versionCode 1\r\n        versionName \"1.0\"\r\n\r\n        testInstrumentationRunner \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            minifyEnabled false\r\n            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'\r\n        }\r\n    }\r\n    compileOptions {\r\n        sourceCompatibility JavaVersion.VERSION_1_8\r\n        targetCompatibility JavaVersion.VERSION_1_8\r\n    }\r\n}\r\n\r\ndependencies {\r\n    implementation 'androidx.appcompat:appcompat:1.3.0'\r\n    implementation 'com.google.android.material:material:1.4.0'\r\n    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'\r\n    implementation 'androidx.camera:camera-core:1.0.0'\r\n    testImplementation 'junit:junit:4.13.2'\r\n    androidTestImplementation 'androidx.test.ext:junit:1.1.3'\r\n    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'\r\n    implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:18.1.0'\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle b/app/build.gradle
+--- a/app/build.gradle	
++++ b/app/build.gradle	
+@@ -36,4 +36,5 @@
+     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+     implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:18.1.0'
++    implementation "androidx.cardview:cardview:1.0.0"
+ }
+\ No newline at end of file
+Index: app/src/main/java/ch/bfh/memory/activities/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ch.bfh.memory.activities;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport android.os.Bundle;\r\n\r\nimport ch.bfh.memory.R;\r\n\r\npublic class MainActivity extends AppCompatActivity {\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_main);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/ch/bfh/memory/activities/MainActivity.java b/app/src/main/java/ch/bfh/memory/activities/MainActivity.java
+--- a/app/src/main/java/ch/bfh/memory/activities/MainActivity.java	
++++ b/app/src/main/java/ch/bfh/memory/activities/MainActivity.java	
+@@ -1,6 +1,8 @@
+ package ch.bfh.memory.activities;
+ 
+ import androidx.appcompat.app.AppCompatActivity;
++import androidx.recyclerview.widget.GridLayoutManager;
++import androidx.recyclerview.widget.RecyclerView;
+ 
+ import android.os.Bundle;
+ 
+@@ -8,9 +10,18 @@
+ 
+ public class MainActivity extends AppCompatActivity {
+ 
++    RecyclerView recyclerView;
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_main);
++        init();
++    }
++
++    private void init()
++    {
++        recyclerView = findViewById(R.id.recyclerViewMomory);
++        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
++        recyclerView.setLayoutManager(layoutManager);
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    tools:context=\".activities.MainActivity\">\r\n\r\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_main.xml b/app/src/main/res/layout/activity_main.xml
+--- a/app/src/main/res/layout/activity_main.xml	
++++ b/app/src/main/res/layout/activity_main.xml	
+@@ -6,4 +6,11 @@
+     android:layout_height="match_parent"
+     tools:context=".activities.MainActivity">
+ 
++    <androidx.recyclerview.widget.RecyclerView
++        android:id="@+id/recyclerViewMomory"
++        android:layout_width="410dp"
++        android:layout_height="629dp"
++        android:layout_marginTop="100dp"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent" />
+ </androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/card_laout.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/card_laout.xml b/app/src/main/res/layout/card_laout.xml
+new file mode 100644
+--- /dev/null	
++++ b/app/src/main/res/layout/card_laout.xml	
+@@ -0,0 +1,27 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="wrap_content"
++    android:layout_height="wrap_content">
++
++    <TextView
++        android:id="@+id/textView"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="2dp"
++        android:text="TextView"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/imageView" />
++
++    <ImageView
++        android:id="@+id/imageView"
++        android:layout_width="202dp"
++        android:layout_height="207dp"
++        android:layout_marginTop="4dp"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent"
++        tools:srcCompat="@tools:sample/avatars" />
++</androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"GRADLE\" />\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/gradle.xml b/.idea/gradle.xml
+--- a/.idea/gradle.xml	
++++ b/.idea/gradle.xml	
+@@ -1,11 +1,14 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
++  <component name="GradleMigrationSettings" migrationVersion="1" />
+   <component name="GradleSettings">
+     <option name="linkedExternalProjectsSettings">
+       <GradleProjectSettings>
+         <option name="testRunner" value="GRADLE" />
+         <option name="distributionType" value="DEFAULT_WRAPPED" />
+         <option name="externalProjectPath" value="$PROJECT_DIR$" />
++        <option name="gradleHome" value="$PROJECT_DIR$/../../../Gradle/gradle-6.7" />
++        <option name="gradleJvm" value="Embedded JDK" />
+         <option name="modules">
+           <set>
+             <option value="$PROJECT_DIR$" />
+Index: ../Bootcamp/app/src/main/java/ch/bfh/bootcamp/activities/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ch.bfh.bootcamp.activities;\r\n\r\nimport android.Manifest;\r\nimport android.app.AlertDialog;\r\nimport android.content.DialogInterface;\r\nimport android.content.Intent;\r\nimport android.content.pm.PackageManager;\r\nimport android.hardware.Sensor;\r\nimport android.hardware.SensorEvent;\r\nimport android.hardware.SensorEventListener;\r\nimport android.hardware.SensorManager;\r\nimport android.os.Bundle;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.ProgressBar;\r\nimport android.widget.TextView;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.core.app.ActivityCompat;\r\nimport androidx.core.content.ContextCompat;\r\n\r\nimport com.budiyev.android.codescanner.CodeScanner;\r\nimport com.budiyev.android.codescanner.DecodeCallback;\r\nimport com.budiyev.android.codescanner.ScanMode;\r\nimport com.google.zxing.Result;\r\n\r\nimport org.json.JSONException;\r\nimport org.json.JSONObject;\r\n\r\nimport ch.bfh.bootcamp.R;\r\nimport ch.bfh.bootcamp.utils.LogAppUtil;\r\nimport ch.bfh.bootcamp.utils.MagnetUtil;\r\n\r\npublic class MainActivity extends AppCompatActivity {\r\n\r\n    private CodeScanner mCodeScanner;\r\n\r\n    private TextView textView_qr_content;\r\n    private Button button_submit;\r\n    private ProgressBar progressBar;\r\n\r\n    //Sensors\r\n    private SensorManager mSensorManager;\r\n    private Sensor mSensor;\r\n    private SensorEventListener magnetListener;\r\n\r\n    //\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_main);\r\n\r\n        mCodeScanner = new CodeScanner(this, findViewById(R.id.scanner_view));\r\n        mCodeScanner.setScanMode(ScanMode.CONTINUOUS);\r\n\r\n        initialize();\r\n\r\n        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);\r\n        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);\r\n    }\r\n\r\n    private void initialize() {\r\n        progressBar = findViewById(R.id.progressBar);\r\n        textView_qr_content = findViewById(R.id.qr_content);\r\n        button_submit = findViewById(R.id.button_submit);\r\n\r\n        createListener();\r\n        checkForPermissions();\r\n    }\r\n\r\n    private void checkForPermissions() {\r\n        //Check for permission of camera\r\n        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)\r\n                == PackageManager.PERMISSION_DENIED) {\r\n            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 100);\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public void onResume() {\r\n        super.onResume();\r\n        mCodeScanner.startPreview();\r\n        mSensorManager.registerListener(magnetListener, mSensor, mSensorManager.SENSOR_DELAY_NORMAL);\r\n\r\n    }\r\n\r\n    public void createListener() {\r\n        //Set button to submit to logbook\r\n        button_submit.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);\r\n                builder.setMessage(R.string.confirmation_title)\r\n                        .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {\r\n                            public void onClick(DialogInterface dialog, int id) {\r\n                                // Start logging activity\r\n                                startActivity(LogAppUtil.createIntent(textView_qr_content.getText().toString()));\r\n                            }\r\n                        })\r\n                        .setNegativeButton(R.string.cancel, (dialog, id) -> {\r\n                            // User cancelled the dialog\r\n                        });\r\n                builder.create().show();\r\n            }\r\n        });\r\n\r\n        //Set callback if qrcode is detected\r\n        mCodeScanner.setDecodeCallback(new DecodeCallback() {\r\n            @Override\r\n            public void onDecoded(@NonNull final Result result) {\r\n                runOnUiThread(new Runnable() {\r\n                    @Override\r\n                    public void run() {\r\n                        textView_qr_content.setText(result.getText());\r\n                    }\r\n                });\r\n            }\r\n        });\r\n\r\n        //create magnet lister\r\n        magnetListener = new SensorEventListener() {\r\n            @Override\r\n            public void onSensorChanged(SensorEvent sensorEvent) {\r\n                float[] mag = sensorEvent.values;\r\n                progressBar.setProgress(MagnetUtil.calculateMagnetPercentage(mag, mSensor.getMaximumRange()));\r\n            }\r\n            @Override\r\n            public void onAccuracyChanged(Sensor sensor, int i) {\r\n            }\r\n        };\r\n\r\n    }\r\n\r\n    @Override\r\n    public void onPause() {\r\n        super.onPause();\r\n        //release resources of qr code scanner\r\n        mCodeScanner.releaseResources();\r\n        //release magnet scanner\r\n        mSensorManager.unregisterListener(magnetListener);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../Bootcamp/app/src/main/java/ch/bfh/bootcamp/activities/MainActivity.java b/../Bootcamp/app/src/main/java/ch/bfh/bootcamp/activities/MainActivity.java
+--- a/../Bootcamp/app/src/main/java/ch/bfh/bootcamp/activities/MainActivity.java	
++++ b/../Bootcamp/app/src/main/java/ch/bfh/bootcamp/activities/MainActivity.java	
+@@ -3,7 +3,6 @@
+ import android.Manifest;
+ import android.app.AlertDialog;
+ import android.content.DialogInterface;
+-import android.content.Intent;
+ import android.content.pm.PackageManager;
+ import android.hardware.Sensor;
+ import android.hardware.SensorEvent;
+@@ -25,9 +24,6 @@
+ import com.budiyev.android.codescanner.ScanMode;
+ import com.google.zxing.Result;
+ 
+-import org.json.JSONException;
+-import org.json.JSONObject;
+-
+ import ch.bfh.bootcamp.R;
+ import ch.bfh.bootcamp.utils.LogAppUtil;
+ import ch.bfh.bootcamp.utils.MagnetUtil;
+@@ -45,8 +41,6 @@
+     private Sensor mSensor;
+     private SensorEventListener magnetListener;
+ 
+-    //
+-
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"DesignSurface\">\r\n    <option name=\"filePathToZoomLevelMap\">\r\n      <map>\r\n        <entry key=\"..\\:/Users/Nici/Documents/GitHub/AppRun/Memory/app/src/main/res/layout/activity_camera.xml\" value=\"0.18\" />\r\n        <entry key=\"..\\:/Users/Nici/Documents/GitHub/AppRun/Memory/app/src/main/res/layout/activity_main.xml\" value=\"0.15096251266464034\" />\r\n        <entry key=\"..\\:/Users/Nici/Documents/GitHub/AppRun/Memory/app/src/main/res/xml/file_paths.xml\" value=\"0.15096251266464034\" />\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_11\" default=\"true\" project-jdk-name=\"Android Studio default JDK\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n  <component name=\"ProjectType\">\r\n    <option name=\"id\" value=\"Android\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	
++++ b/.idea/misc.xml	
+@@ -6,10 +6,12 @@
+         <entry key="..\:/Users/Nici/Documents/GitHub/AppRun/Memory/app/src/main/res/layout/activity_camera.xml" value="0.18" />
+         <entry key="..\:/Users/Nici/Documents/GitHub/AppRun/Memory/app/src/main/res/layout/activity_main.xml" value="0.15096251266464034" />
+         <entry key="..\:/Users/Nici/Documents/GitHub/AppRun/Memory/app/src/main/res/xml/file_paths.xml" value="0.15096251266464034" />
++        <entry key="..\:/source/AppRun/Memory/app/src/main/res/layout/activity_main.xml" value="0.55" />
++        <entry key="..\:/source/AppRun/Memory/app/src/main/res/layout/card_laout.xml" value="0.55" />
+       </map>
+     </option>
+   </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+   <component name="ProjectType">

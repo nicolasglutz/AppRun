@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
         map.setMultiTouchControls(true);
-        
+
 
         //init my current location
         this.myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()), map);
@@ -153,33 +153,50 @@ public class MainActivity extends AppCompatActivity {
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 2000, new LocationListener() {
-            @Override
-            public void onLocationChanged(@NonNull Location location) {
-                GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
-                if (!firstLocationSet) {
-                    map.getController().setCenter(point);
-                    firstLocationSet = true;
+        ((Runnable) () -> {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 1, new LocationListener() {
+                @Override
+                public void onFlushComplete(int requestCode) {
+                    LocationListener.super.onFlushComplete(requestCode);
                 }
 
-
-                if (lastLocationMarker != null)
-                    map.getOverlays().remove(lastLocationMarker);
-
-                currentLocation = point;
-
-                lastLocationMarker = new Marker(map);
-                lastLocationMarker.setPosition(point);
-                lastLocationMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                @Override
+                public void onLocationChanged(@NonNull Location location) {
+                    GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
+                    if (!firstLocationSet) {
+                        map.getController().setCenter(point);
+                        firstLocationSet = true;
+                    }
 
 
-                lastLocationMarker.setIcon(myIcon);
-                map.getOverlays().add(lastLocationMarker);
-                map.invalidate();
+                    if (lastLocationMarker != null)
+                        map.getOverlays().remove(lastLocationMarker);
 
-            }
-        });
+                    currentLocation = point;
+
+                    lastLocationMarker = new Marker(map);
+                    lastLocationMarker.setPosition(point);
+                    lastLocationMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+
+
+                    lastLocationMarker.setIcon(myIcon);
+                    map.getOverlays().add(lastLocationMarker);
+                    map.invalidate();
+
+                }
+            });
+        }).run();
+
 
     }
 

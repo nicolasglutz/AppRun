@@ -12,6 +12,9 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Die DrawingView ist für die Darstellung und Verwaltung der Zeichenfläche
  * zuständig.
@@ -64,11 +67,10 @@ public class DrawingView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         float touchX = event.getX();
         float touchY = event.getY();
-
+        List<Pixel> pixels = new ArrayList<>();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 drawPath.moveTo(touchX, touchY);
-
                 // TODO wir müssen uns die berührten Punkte zwischenspeichern
 
                 break;
@@ -92,6 +94,11 @@ public class DrawingView extends View {
 
         invalidate();
         return true;
+    }
+
+    private void addPixelToList(List<Pixel> pixels, float touchX, float touchY )
+    {
+       // touchX
     }
 
     public void startNew() {

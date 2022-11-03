@@ -1,0 +1,89 @@
+Index: app/src/main/java/ch/bfh/memory/activities/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ch.bfh.memory.activities;\r\n\r\nimport android.app.AlertDialog;\r\nimport android.os.Bundle;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.recyclerview.widget.GridLayoutManager;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\nimport ch.bfh.memory.R;\r\nimport ch.bfh.memory.models.MemoryCard;\r\nimport ch.bfh.memory.models.MemoryPair;\r\nimport ch.bfh.memory.utils.LogAppUtil;\r\n\r\npublic class MainActivity extends AppCompatActivity{\r\n\r\n    private static RecyclerView recyclerView;\r\n    private static List<MemoryCard> memoryCards;\r\n    private static List<MemoryPair> pairs;\r\n    public static View.OnClickListener memoryListener;\r\n    public static RecyclerView.Adapter memoryAdaptor;\r\n    public Button logBookButton;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_main);\r\n        init();\r\n    }\r\n\r\n    private void init()\r\n    {\r\n        memoryListener = new MemoryOnClickListener();\r\n        pairs = new ArrayList<>();\r\n        memoryCards = List.of(new MemoryCard(\"test\", \"miow\", null), new MemoryCard(\"test2\", \"miow\", null), new MemoryCard(\"test3\", \"miow\", null), new MemoryCard(\"test4\", \"miow\", null) );\r\n        recyclerView = findViewById(R.id.recyclerViewMomory);\r\n        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);\r\n        recyclerView.setLayoutManager(layoutManager);\r\n        memoryAdaptor = new MemoryTypeAdaptor(memoryCards);\r\n        recyclerView.setAdapter( memoryAdaptor );\r\n        logBookButton = findViewById(R.id.logbook_btn);\r\n        logBookButton.setOnClickListener((View view) -> {\r\n            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);\r\n            builder.setMessage(R.string.confirmation_title)\r\n                    .setPositiveButton(R.string.confirmation_save, (dialog, id) -> {\r\n                        // Start logging activity\r\n                        startActivity(LogAppUtil.createIntent(pairs));\r\n                    })\r\n                    .setNegativeButton(R.string.cancel, (dialog, id) -> {\r\n                        // User cancelled the dialog\r\n                    });\r\n            builder.create().show();\r\n        });\r\n    }\r\n\r\n\r\n\r\n    private static class MemoryOnClickListener implements View.OnClickListener {\r\n        @Override\r\n        public void onClick(View view) {\r\n            int postion = recyclerView.getChildAdapterPosition(view);\r\n            addCard(memoryCards.get(postion));\r\n            memoryAdaptor.notifyItemChanged(postion);\r\n        }\r\n\r\n        private void addCard(MemoryCard card) {\r\n            if (!pairs.isEmpty())\r\n            {\r\n                MemoryPair memoryPair = pairs.get(pairs.size() - 1);\r\n                if (!memoryPair.isComplete()) {\r\n                    card.setId(String.valueOf(pairs.size()-1));\r\n                    memoryPair.setCardTwo(card);\r\n\r\n                    return;\r\n                }\r\n            }\r\n            MemoryPair memoryPairNew = new MemoryPair(card);\r\n            pairs.add(memoryPairNew);\r\n            card.setId(String.valueOf(pairs.size()-1));\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/ch/bfh/memory/activities/MainActivity.java b/app/src/main/java/ch/bfh/memory/activities/MainActivity.java
+--- a/app/src/main/java/ch/bfh/memory/activities/MainActivity.java	(revision 95396e7ef5202cf8dbb76cce254936653c473290)
++++ b/app/src/main/java/ch/bfh/memory/activities/MainActivity.java	(date 1664351983211)
+@@ -9,6 +9,11 @@
+ import androidx.recyclerview.widget.GridLayoutManager;
+ import androidx.recyclerview.widget.RecyclerView;
+ 
++import android.os.Bundle;
++import android.os.Environment;
++import android.view.View;
++
++import java.io.File;
+ import java.util.ArrayList;
+ import java.util.List;
+ 
+@@ -37,7 +42,14 @@
+     {
+         memoryListener = new MemoryOnClickListener();
+         pairs = new ArrayList<>();
+-        memoryCards = List.of(new MemoryCard("test", "miow", null), new MemoryCard("test2", "miow", null), new MemoryCard("test3", "miow", null), new MemoryCard("test4", "miow", null) );
++        File directory = getExternalFilesDir(Environment.DIRECTORY_PICTURES);;
++        File[] files = directory.listFiles();
++        memoryCards = new ArrayList<>();
++        for (int i = 0; i < files.length; i++)
++        {
++            memoryCards.add(new MemoryCard("test", files[i].getPath(), null));
++        }
++//        memoryCards = List.of(new MemoryCard("test", "miow", null), new MemoryCard("test2", "miow", null), new MemoryCard("test3", "miow", null), new MemoryCard("test4", "miow", null) );
+         recyclerView = findViewById(R.id.recyclerViewMomory);
+         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
+         recyclerView.setLayoutManager(layoutManager);
+@@ -58,8 +70,6 @@
+         });
+     }
+ 
+-
+-
+     private static class MemoryOnClickListener implements View.OnClickListener {
+         @Override
+         public void onClick(View view) {
+Index: app/src/main/java/ch/bfh/memory/activities/MemoryTypeAdaptor.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ch.bfh.memory.activities;\r\n\r\nimport android.graphics.Bitmap;\r\nimport android.graphics.BitmapFactory;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.ImageView;\r\nimport android.widget.TextView;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport java.io.File;\r\nimport java.util.List;\r\n\r\nimport ch.bfh.memory.R;\r\nimport ch.bfh.memory.models.MemoryCard;\r\n\r\npublic class MemoryTypeAdaptor extends RecyclerView.Adapter<MemoryTypeAdaptor.MemoryViewHolder> {\r\n\r\n    List<MemoryCard> memoryCards;\r\n\r\n    public MemoryTypeAdaptor(List<MemoryCard> memoryCards) {\r\n        this.memoryCards = memoryCards;\r\n    }\r\n\r\n    @NonNull\r\n    @Override\r\n    public MemoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {\r\n        View view = LayoutInflater.from(parent.getContext())\r\n                .inflate(R.layout.card_laout, parent, false);\r\n\r\n        MemoryViewHolder viewHolder = new MemoryViewHolder(view);\r\n        view.setOnClickListener(MainActivity.memoryListener);\r\n        return viewHolder;\r\n    }\r\n\r\n    @Override\r\n    public void onBindViewHolder(@NonNull MemoryViewHolder holder, int position) {\r\n        TextView text = holder.getText();\r\n        ImageView img = holder.getImg();\r\n        TextView id = holder.getTextid();\r\n\r\n        text.setText(memoryCards.get(position).getWord());\r\n\r\n        id.setText(memoryCards.get(position).getId());\r\n        File imgFile = new File(memoryCards.get(position).getPath());\r\n\r\n        if(imgFile.exists()){\r\n            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());\r\n            img.setImageBitmap(myBitmap);\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public int getItemCount() {\r\n        return memoryCards.size();\r\n    }\r\n\r\n    public static class MemoryViewHolder extends RecyclerView.ViewHolder {\r\n        private TextView text;\r\n        private ImageView img;\r\n        private TextView textid;\r\n\r\n        public MemoryViewHolder(View viewItem) {\r\n            super(viewItem);\r\n            this.text = (TextView) viewItem.findViewById(R.id.memory_text);\r\n            this.img = viewItem.findViewById(R.id.img_memory);\r\n            this.textid = viewItem.findViewById(R.id.memory_id);\r\n        }\r\n\r\n        public TextView getText() {\r\n            return text;\r\n        }\r\n\r\n        public ImageView getImg() {\r\n            return img;\r\n        }\r\n\r\n        public TextView getTextid() {\r\n            return textid;\r\n        }\r\n\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/ch/bfh/memory/activities/MemoryTypeAdaptor.java b/app/src/main/java/ch/bfh/memory/activities/MemoryTypeAdaptor.java
+--- a/app/src/main/java/ch/bfh/memory/activities/MemoryTypeAdaptor.java	(revision 95396e7ef5202cf8dbb76cce254936653c473290)
++++ b/app/src/main/java/ch/bfh/memory/activities/MemoryTypeAdaptor.java	(date 1664351885644)
+@@ -2,6 +2,7 @@
+ 
+ import android.graphics.Bitmap;
+ import android.graphics.BitmapFactory;
++import android.net.Uri;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+@@ -39,7 +40,7 @@
+     @Override
+     public void onBindViewHolder(@NonNull MemoryViewHolder holder, int position) {
+         TextView text = holder.getText();
+-        ImageView img = holder.getImg();
++        ImageView imgV = holder.getImg();
+         TextView id = holder.getTextid();
+ 
+         text.setText(memoryCards.get(position).getWord());
+@@ -47,9 +48,13 @@
+         id.setText(memoryCards.get(position).getId());
+         File imgFile = new File(memoryCards.get(position).getPath());
+ 
++        imgV.setImageResource(R.drawable.ic_launcher_background);
++
+         if(imgFile.exists()){
+             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+-            img.setImageBitmap(myBitmap);
++            imgV.setImageBitmap(myBitmap);
++
++
+         }
+     }
+ 
