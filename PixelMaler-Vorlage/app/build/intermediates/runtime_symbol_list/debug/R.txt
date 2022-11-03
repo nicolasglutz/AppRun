@@ -701,6 +701,7 @@ int id async 0x7f080040
 int id beginning 0x7f080041
 int id blocking 0x7f080042
 int id bottom 0x7f080043
+int id btn_sendToLog 0x7f0800bc
 int id buttonPanel 0x7f080044
 int id center_vertical 0x7f080045
 int id checkbox 0x7f080046
@@ -909,6 +910,7 @@ int string erase 0x7f0d001e
 int string paint 0x7f0d001f
 int string save 0x7f0d0020
 int string search_menu_title 0x7f0d0021
+int string send_to_log 0x7f0d0024
 int string start_new 0x7f0d0022
 int string status_bar_notification_info_overflow 0x7f0d0023
 int style AlertDialog_AppCompat 0x7f0e0000

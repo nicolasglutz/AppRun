@@ -4,7 +4,7 @@
             "outputFile": "ch.apprun.pixelmaler.app-mergeDebugResources-19:/values-watch-v21/values-watch-v21.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\varot\\.gradle\\caches\\transforms-3\\36ecbbb481602c3ae48671558246e914\\transformed\\appcompat-1.5.1\\res\\values-watch-v21\\values-watch-v21.xml",
+                    "source": "/Users/nicolasglutz/.gradle/caches/transforms-3/36ecbbb481602c3ae48671558246e914/transformed/appcompat-1.5.1/res/values-watch-v21/values-watch-v21.xml",
                     "from": {
                         "startLines": "2,6,10",
                         "startColumns": "4,4,4",

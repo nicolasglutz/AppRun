@@ -4,7 +4,7 @@
             "outputFile": "ch.apprun.pixelmaler.app-mergeDebugResources-19:/values-v16/values-v16.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\varot\\.gradle\\caches\\transforms-3\\7c39e07860e651dde17cb56d96162763\\transformed\\core-1.8.0\\res\\values-v16\\values-v16.xml",
+                    "source": "/Users/nicolasglutz/.gradle/caches/transforms-3/7c39e07860e651dde17cb56d96162763/transformed/core-1.8.0/res/values-v16/values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\varot\\.gradle\\caches\\transforms-3\\36ecbbb481602c3ae48671558246e914\\transformed\\appcompat-1.5.1\\res\\values-v16\\values-v16.xml",
+                    "source": "/Users/nicolasglutz/.gradle/caches/transforms-3/36ecbbb481602c3ae48671558246e914/transformed/appcompat-1.5.1/res/values-v16/values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

@@ -702,6 +702,7 @@ id async
 id beginning
 id blocking
 id bottom
+id btn_sendToLog
 id buttonPanel
 id center_vertical
 id checkbox
@@ -910,6 +911,7 @@ string erase
 string paint
 string save
 string search_menu_title
+string send_to_log
 string start_new
 string status_bar_notification_info_overflow
 style AlertDialog_AppCompat

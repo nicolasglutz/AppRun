@@ -4,7 +4,7 @@
             "outputFile": "ch.apprun.pixelmaler.app-mergeDebugResources-19:/values-sw600dp-v13/values-sw600dp-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\varot\\.gradle\\caches\\transforms-3\\36ecbbb481602c3ae48671558246e914\\transformed\\appcompat-1.5.1\\res\\values-sw600dp-v13\\values-sw600dp-v13.xml",
+                    "source": "/Users/nicolasglutz/.gradle/caches/transforms-3/36ecbbb481602c3ae48671558246e914/transformed/appcompat-1.5.1/res/values-sw600dp-v13/values-sw600dp-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

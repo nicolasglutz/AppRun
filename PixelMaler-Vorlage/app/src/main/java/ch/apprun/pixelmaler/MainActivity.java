@@ -8,12 +8,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+
+import ch.apprun.pixelmaler.utils.LogAppUtil;
 
 public class MainActivity extends Activity {
 
     private DrawingView drawingView;
     private ImageButton currentBrush;
+
+    private Button btn_sendToLog;
 
     public void eraseClicked(View view) {
         if (view != currentBrush) {
@@ -22,6 +27,7 @@ public class MainActivity extends Activity {
             currentBrush.setImageDrawable(null);
             currentBrush = (ImageButton) view;
         }
+
 
         drawingView.setErase(true);
     }
@@ -36,6 +42,15 @@ public class MainActivity extends Activity {
         currentBrush.setImageDrawable(getResources().getDrawable(R.drawable.selected));
         String color = currentBrush.getTag().toString();
         drawingView.setColor(color);
+
+        btn_sendToLog = (Button) findViewById(R.id.btn_sendToLog);
+
+        btn_sendToLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(LogAppUtil.createIntent(DrawingView.pixels));
+            }
+        });
     }
 
     private void onCreateNewDrawingAction() {

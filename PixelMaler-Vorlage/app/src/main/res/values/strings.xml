@@ -7,5 +7,6 @@
     <string name="erase">Erase</string>
     <string name="save">Save</string>
     <string name="paint">Paint</string>
+    <string name="send_to_log">Send to log</string>
 
 </resources>

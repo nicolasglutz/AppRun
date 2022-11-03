@@ -1,14 +1,19 @@
 package ch.apprun.pixelmaler;
 
+import android.graphics.Paint;
+
 import java.util.Objects;
 
 public class Pixel {
     private int xNr;
     private int yNr;
+    private Paint drawPaint = new Paint();
 
-    public Pixel(int xNr, int yNr) {
+
+    public Pixel(int xNr, int yNr, Paint paint) {
         this.xNr = xNr;
         this.yNr = yNr;
+        this.drawPaint = paint;
     }
 
     public int getxNr() {
@@ -17,6 +22,10 @@ public class Pixel {
 
     public int getyNr() {
         return yNr;
+    }
+
+    public Paint getDrawPaint() {
+        return drawPaint;
     }
 
     @Override
