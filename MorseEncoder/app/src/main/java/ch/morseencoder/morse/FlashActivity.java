@@ -6,8 +6,10 @@ import androidx.core.content.ContextCompat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import ch.morseencoder.R;
@@ -45,8 +47,9 @@ public class FlashActivity extends AppCompatActivity {
         if (code.isEmpty()) {
             return;
         }
-        Handler handler = new Handler();
-        int totalTimeUntilCurrentIndexInMS = 0;
+        lightOff();
+        Handler handler = new Handler(Looper.getMainLooper());
+        int totalTimeUntilCurrentIndexInMS = 5000;
         for (Primitive letter : code) {
             handler.postDelayed(
                     (Runnable) () -> {

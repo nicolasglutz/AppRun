@@ -11,7 +11,7 @@ import java.util.List;
 import ch.bfh.memory.models.MemoryPair;
 
 public class LogAppUtil {
-    private static final String APPLICATION_PATH_LOGAPP = "ch.apprun.logmessage";
+    public static final String APPLICATION_PATH_LOGAPP = "ch.apprun.logmessage";
     private static final String TASK_NAME = "Memory";
 
     public static Intent createIntent( List<MemoryPair> pairs ) {

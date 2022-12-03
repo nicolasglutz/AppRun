@@ -1,42 +1,38 @@
 [
     {
-        "merged": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-merged_res-21:/mipmap-mdpi_ic_launcher.png.flat",
-        "source": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-main-23:/mipmap-mdpi/ic_launcher.png"
+        "merged": "ch.apprun.pixelmaler.app-merged_res-21:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "ch.apprun.pixelmaler.app-main-23:/mipmap-hdpi/ic_launcher.png"
     },
     {
-        "merged": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-merged_res-21:/layout_activity_main.xml.flat",
-        "source": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-main-23:/layout/activity_main.xml"
+        "merged": "ch.apprun.pixelmaler.app-merged_res-21:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "ch.apprun.pixelmaler.app-main-23:/mipmap-xhdpi/ic_launcher.png"
     },
     {
-        "merged": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-merged_res-21:/mipmap-xxxhdpi_ic_launcher.png.flat",
-        "source": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-main-23:/mipmap-xxxhdpi/ic_launcher.png"
+        "merged": "ch.apprun.pixelmaler.app-merged_res-21:/drawable_eraser.png.flat",
+        "source": "ch.apprun.pixelmaler.app-main-23:/drawable/eraser.png"
     },
     {
-        "merged": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-merged_res-21:/drawable_eraser.png.flat",
-        "source": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-main-23:/drawable/eraser.png"
+        "merged": "ch.apprun.pixelmaler.app-merged_res-21:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "ch.apprun.pixelmaler.app-main-23:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "ch.apprun.pixelmaler.app-merged_res-21:/drawable_selected.xml.flat",
+        "source": "ch.apprun.pixelmaler.app-main-23:/drawable/selected.xml"
+    },
+    {
+        "merged": "ch.apprun.pixelmaler.app-merged_res-21:/layout_palette.xml.flat",
+        "source": "ch.apprun.pixelmaler.app-main-23:/layout/palette.xml"
     },
     {
         "merged": "ch.apprun.pixelmaler.app-merged_res-21:/layout_activity_main.xml.flat",
         "source": "ch.apprun.pixelmaler.app-main-23:/layout/activity_main.xml"
     },
     {
-        "merged": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-merged_res-21:/mipmap-hdpi_ic_launcher.png.flat",
-        "source": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-main-23:/mipmap-hdpi/ic_launcher.png"
+        "merged": "ch.apprun.pixelmaler.app-merged_res-21:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "ch.apprun.pixelmaler.app-main-23:/mipmap-mdpi/ic_launcher.png"
     },
     {
-        "merged": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-merged_res-21:/drawable_selected.xml.flat",
-        "source": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-main-23:/drawable/selected.xml"
-    },
-    {
-        "merged": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-merged_res-21:/mipmap-xxhdpi_ic_launcher.png.flat",
-        "source": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-main-23:/mipmap-xxhdpi/ic_launcher.png"
-    },
-    {
-        "merged": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-merged_res-21:/layout_palette.xml.flat",
-        "source": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-main-23:/layout/palette.xml"
-    },
-    {
-        "merged": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-merged_res-21:/mipmap-xhdpi_ic_launcher.png.flat",
-        "source": "/Users/nicolasglutz/.gradle/daemon/7.4/ch.apprun.pixelmaler.app-main-23:/mipmap-xhdpi/ic_launcher.png"
+        "merged": "ch.apprun.pixelmaler.app-merged_res-21:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "ch.apprun.pixelmaler.app-main-23:/mipmap-xxxhdpi/ic_launcher.png"
     }
 ]

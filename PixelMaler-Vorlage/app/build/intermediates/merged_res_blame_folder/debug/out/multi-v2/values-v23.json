@@ -4,7 +4,7 @@
             "outputFile": "ch.apprun.pixelmaler.app-mergeDebugResources-19:/values-v23/values-v23.xml",
             "map": [
                 {
-                    "source": "/Users/nicolasglutz/.gradle/caches/transforms-3/36ecbbb481602c3ae48671558246e914/transformed/appcompat-1.5.1/res/values-v23/values-v23.xml",
+                    "source": "C:\\Users\\varot\\.gradle\\caches\\transforms-3\\36ecbbb481602c3ae48671558246e914\\transformed\\appcompat-1.5.1\\res\\values-v23\\values-v23.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,20,34,35,36,39,43,44,45,46",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4",
